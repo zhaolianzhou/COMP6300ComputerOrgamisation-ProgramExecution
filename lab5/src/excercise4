@@ -1,0 +1,38 @@
+main:
+	@enable PB_clock
+	enable_GPIOx_clock #2
+	@enable_PE_clock
+	enable_GPIOx_clock #16
+	b loop
+
+loop:
+	bl turn_red_on
+	bl turn_red_off
+	bl turn_green_on
+	bl turn_green_off
+	b loop
+
+turn_red_on:
+	@load base address of PB
+	ldr r1, =0x48000400
+	set_bit r1, #0, #4
+	clear_bit r1, #0, #0xffffffdf
+	@turn pin on
+	set_bit r1, #0x14, #2
+turn_red_off:
+	@load base address of PB
+	ldr r1, =0x48000400
+	clear_bit r1, #0x14, #0xfffffffb
+
+turn_green_on:
+	@load base address of PE
+	ldr r1, =0x48001000
+	set_bit r1, #0, #3
+	clear_bit r1, #0, #0xfffdffff
+	@turn pin on
+	set_bit r1, #0x14, #8
+
+turn_green_off:
+	@load base address of PE
+	ldr r1, =0x48001000
+	clear_bit r1, #0x14, #0xfffffeff
